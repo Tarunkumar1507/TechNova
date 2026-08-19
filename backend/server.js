@@ -81,8 +81,15 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
-const server = app.listen(PORT, () => {
-  console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
-});
+let server;
+if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
+  server = app.listen(PORT, () => {
+    console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+  });
+} else {
+  server = app;
+}
 
-module.exports = server; // Expose server for Jest tests
+server.app = app;
+
+module.exports = server; // Expose server for Jest tests / Vercel serverless functions
