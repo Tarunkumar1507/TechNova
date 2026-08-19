@@ -1,0 +1,11 @@
+global:
+  scrape_interval: 15s # Set scrape interval to every 15 seconds
+  evaluation_interval: 15s # Evaluate rules every 15 seconds
+
+scrape_configs:
+  # Scrape target for the Node.js Express backend
+  - job_name: 'technova-backend'
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['backend:5000']

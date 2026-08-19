@@ -1,0 +1,35 @@
+name: Continuous Deployment (CD)
+
+on:
+  workflow_run:
+    workflows: ["Publish Docker Images to Docker Hub"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy to AWS EC2 via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # Navigate to the project directory or clone if not exists
+            if [ ! -d "~/technova" ]; then
+              git clone https://github.com/${{ github.repository }}.git ~/technova
+            fi
+            
+            cd ~/technova
+            git pull origin main
+            
+            # Setup permissions and run deployment script
+            chmod +x deploy.sh
+            ./deploy.sh

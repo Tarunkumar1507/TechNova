@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  labels:
+    app: technova-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: technova-backend
+  template:
+    metadata:
+      labels:
+        app: technova-backend
+    spec:
+      containers:
+        - name: backend
+          image: dockerhub_username/technova-backend:latest # Replace dockerhub_username with actual Docker Hub username
+          ports:
+            - containerPort: 5000
+          env:
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: technova-config
+                  key: NODE_ENV
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: technova-config
+                  key: PORT
+            - name: MONGO_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: technova-config
+                  key: MONGO_URI
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: technova-secret
+                  key: JWT_SECRET
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 5000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 15
