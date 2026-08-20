@@ -19,49 +19,50 @@ const inMemoryProducts = sampleProducts.map((p, idx) => ({
 // @route   GET /api/products
 // @access  Public
 const getProducts = async (req, res, next) => {
-  try {
-    const { category, search } = req.query;
+  const { category, search } = req.query;
 
-    // --- Fallback: DB not connected, use in-memory data ---
-    if (!isDBConnected()) {
-      let products = [...inMemoryProducts];
-
-      if (category) {
-        products = products.filter(
-          (p) => p.category.toLowerCase() === category.toLowerCase()
-        );
-      }
-
-      if (search) {
-        const term = search.toLowerCase();
-        products = products.filter(
-          (p) =>
-            p.name.toLowerCase().includes(term) ||
-            p.brand.toLowerCase().includes(term)
-        );
-      }
-
-      return res.json({ success: true, count: products.length, data: products });
-    }
-
-    // --- Primary: fetch from MongoDB ---
-    let query = {};
-
+  // Helper to filter in-memory products
+  const getFiltered = () => {
+    let products = [...inMemoryProducts];
     if (category) {
-      query.category = category;
+      products = products.filter(
+        (p) => p.category.toLowerCase() === category.toLowerCase()
+      );
     }
+    if (search) {
+      const term = search.toLowerCase();
+      products = products.filter(
+        (p) =>
+          p.name.toLowerCase().includes(term) ||
+          p.brand.toLowerCase().includes(term)
+      );
+    }
+    return products;
+  };
 
+  // --- Fallback: DB not connected, use in-memory data immediately ---
+  if (!isDBConnected()) {
+    const products = getFiltered();
+    return res.json({ success: true, count: products.length, data: products });
+  }
+
+  // --- Primary: fetch from MongoDB (with fallback catch if DB is unreachable) ---
+  try {
+    let query = {};
+    if (category) query.category = category;
     if (search) {
       query.$or = [
         { name: { $regex: search, $options: 'i' } },
         { brand: { $regex: search, $options: 'i' } },
       ];
     }
-
     const products = await Product.find(query);
     res.json({ success: true, count: products.length, data: products });
   } catch (error) {
-    next(error);
+    // If mongoose throws because DB is unavailable, serve in-memory data
+    console.error('DB query failed, serving in-memory fallback:', error.message);
+    const products = getFiltered();
+    return res.json({ success: true, count: products.length, data: products });
   }
 };
 

@@ -2,16 +2,22 @@ require('dotenv').config();
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
+const mongoose = require('mongoose');
 const rateLimit = require('express-rate-limit');
 const connectDB = require('./config/db');
 const logger = require('./middleware/loggerMiddleware');
 const { errorHandler } = require('./middleware/errorMiddleware');
 const { metricsMiddleware, register } = require('./middleware/metricsMiddleware');
 
+// CRITICAL: Disable mongoose command buffering so DB operations fail immediately
+// (instead of buffering for 10s) when the database is not connected.
+// This allows our in-memory fallback in productController to work correctly.
+mongoose.set('bufferCommands', false);
+
 // Initialize app
 const app = express();
 
-// Connect Database (awaited so DB state is settled before requests hit routes)
+// Connect Database
 connectDB();
 
 // Body parser
