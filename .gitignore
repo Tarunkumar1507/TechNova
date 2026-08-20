@@ -39,3 +39,6 @@ pnpm-debug.log*
 # Docker volumes / logs
 *.log
 .docker-data/
+
+.vercel
+.env*

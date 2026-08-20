@@ -5,6 +5,7 @@ import { AuthContext } from '../context/AuthContext';
 import CartItem from '../components/CartItem';
 import axios from 'axios';
 import { ShoppingBag, CreditCard, ArrowLeft, LogIn } from 'lucide-react';
+import { API_URL } from '../config';
 
 const Cart = () => {
   const { cartItems, updateQuantity, removeFromCart, clearCart, cartTotal } = useContext(CartContext);
@@ -13,8 +14,6 @@ const Cart = () => {
   const [success, setSuccess] = useState('');
   const [checkingOut, setCheckingOut] = useState(false);
   const navigate = useNavigate();
-
-  const API_URL = import.meta.env.VITE_API_URL || '';
 
   const handleCheckout = async () => {
     if (!isAuthenticated) {

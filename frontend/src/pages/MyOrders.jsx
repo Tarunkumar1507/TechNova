@@ -3,13 +3,12 @@ import axios from 'axios';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { Package, Calendar, Tag, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { API_URL } from '../config';
 
 const MyOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-
-  const API_URL = import.meta.env.VITE_API_URL || '';
 
   useEffect(() => {
     const fetchOrders = async () => {

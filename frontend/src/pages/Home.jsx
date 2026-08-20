@@ -4,6 +4,7 @@ import axios from 'axios';
 import SearchBar from '../components/SearchBar';
 import ProductGrid from '../components/ProductGrid';
 import { Cpu, Smartphone, Laptop, Headphones, Sparkles, ArrowRight } from 'lucide-react';
+import { API_URL } from '../config';
 
 const Home = () => {
   const [search, setSearch] = useState('');
@@ -14,7 +15,6 @@ const Home = () => {
   useEffect(() => {
     const fetchFeatured = async () => {
       try {
-        const API_URL = import.meta.env.VITE_API_URL || '';
         const res = await axios.get(`${API_URL}/api/products`);
         // Limit to first 4 products for featured section
         setFeaturedProducts(res.data.data.slice(0, 4));

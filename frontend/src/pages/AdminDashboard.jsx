@@ -3,6 +3,7 @@ import axios from 'axios';
 import AdminSidebar from '../components/AdminSidebar';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { DollarSign, Briefcase, ClipboardList, Users, Plus, Edit2, Trash2, Check, RefreshCw } from 'lucide-react';
+import { API_URL } from '../config';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -10,7 +11,7 @@ const AdminDashboard = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-
+ 
   // Product CRUD Form Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
@@ -24,8 +25,6 @@ const AdminDashboard = () => {
     stock: '',
   });
   const [formError, setFormError] = useState('');
-
-  const API_URL = import.meta.env.VITE_API_URL || '';
 
   const fetchData = async () => {
     setLoading(true);

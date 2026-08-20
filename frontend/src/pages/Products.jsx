@@ -4,6 +4,7 @@ import axios from 'axios';
 import SearchBar from '../components/SearchBar';
 import CategoryFilter from '../components/CategoryFilter';
 import ProductGrid from '../components/ProductGrid';
+import { API_URL } from '../config';
 
 const Products = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -14,8 +15,6 @@ const Products = () => {
   // Get search and category from URL params
   const searchQuery = searchParams.get('search') || '';
   const categoryQuery = searchParams.get('category') || '';
-
-  const API_URL = import.meta.env.VITE_API_URL || '';
 
   useEffect(() => {
     const fetchProducts = async () => {

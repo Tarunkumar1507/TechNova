@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_URL } from '../config';
 
 export const AuthContext = createContext();
 
@@ -7,9 +8,6 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Set API base URL depending on environment
-  const API_URL = import.meta.env.VITE_API_URL || '';
 
   // Configure axios authorization token globally
   const setAuthToken = (token) => {

@@ -5,6 +5,7 @@ import { CartContext } from '../context/CartContext';
 import { AuthContext } from '../context/AuthContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { Star, ShoppingCart, Plus, Minus, Calendar, MessageSquarePlus } from 'lucide-react';
+import { API_URL } from '../config';
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -25,8 +26,6 @@ const ProductDetails = () => {
   const [reviewError, setReviewError] = useState('');
   const [reviewSuccess, setReviewSuccess] = useState('');
   const [submittingReview, setSubmittingReview] = useState(false);
-
-  const API_URL = import.meta.env.VITE_API_URL || '';
 
   const fetchProductAndReviews = async () => {
     try {
