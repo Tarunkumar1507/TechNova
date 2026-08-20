@@ -11,7 +11,7 @@ const { metricsMiddleware, register } = require('./middleware/metricsMiddleware'
 // Initialize app
 const app = express();
 
-// Connect Database
+// Connect Database (awaited so DB state is settled before requests hit routes)
 connectDB();
 
 // Body parser

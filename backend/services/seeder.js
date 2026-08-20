@@ -150,3 +150,4 @@ const seedProducts = async () => {
 };
 
 module.exports = seedProducts;
+module.exports.sampleProducts = sampleProducts;
